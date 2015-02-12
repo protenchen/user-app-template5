@@ -20,7 +20,7 @@
 <div class="whole_container">
 
   <div class="Top_bar">
-    <button class="add_customer" id="addCustomer" ng-click="clearInfo(customer)">+</button>
+    <button class="add_customer" id="addCustomer" ng-click="showForm(false)">+</button>
     <input class="search_input" placeholder="Search Customer"></input>
   </div>
 
@@ -51,7 +51,7 @@
       <div class="navigation_letter">W</div>
       <div class="navigation_letter">X</div>
       <div class="navigation_letter">Y</div>
-      <div class="navigation_letter">Z</div>           
+      <div class="navigation_letter">Z</div>
     </div>
   </div>
 
@@ -66,49 +66,51 @@
 
   <div class="detail_container" hidden id="customerInformation">
     <div class="detail_name">
-      {{customer.first + " " + customer.last}}
+      {{selectedCustomer.first + " " + selectedCustomer.last}}
     </div>
     <div class="detail_company_name">
-      {{customer.company_name + " " + customer.department_name}}
+      {{selectedCustomer.company_name + " " + selectedCustomer.department_name}}
     </div>
     <div class="details">
-      <span style="color: rgb(130,130,130);">Email: </span> 
-      {{customer.email}}
+      <span style="color: rgb(130,130,130);">Email: </span>
+      {{selectedCustomer.email}}
     </div>
     <div class="details">
-      <span style="color: rgb(130,130,130);">Tel: </span> 
-      {{customer.work_phone}}
+      <span style="color: rgb(130,130,130);">Tel: </span>
+      {{selectedCustomer.work_phone}}
     </div>
     <div class="details">
-      <span style="color: rgb(130,130,130);">Mobile: </span> 
-      {{customer.mobile_phone}}
+      <span style="color: rgb(130,130,130);">Mobile: </span>
+      {{selectedCustomer.mobile_phone}}
     </div>
     <div class="details">
-      <span style="color: rgb(130,130,130);">Shipment Address: <br/></span> 
+      <span style="color: rgb(130,130,130);">Shipment Address: <br/></span>
       {{
-      customer.shipment_address + ", " + 
-      customer.shipment_city + ", " + 
-      customer.shipment_state + ", " +
-      customer.shipment_zip + ", " + 
-      customer.shipment_country
+      selectedCustomer.shipment_address + ", " +
+      selectedCustomer.shipment_city + ", " +
+      selectedCustomer.shipment_state + ", " +
+      selectedCustomer.shipment_zip + ", " +
+      selectedCustomer.shipment_country
       }}
     </div>
     <div class="details">
-      <span style="color: rgb(150,150,150);">Mail Address: <br/></span> 
+      <span style="color: rgb(150,150,150);">Mail Address: <br/></span>
       {{
-      customer.mail_address + ", " + 
-      customer.mail_city + ", " + 
-      customer.mail_state + ", " +
-      customer.mail_zip + ", " + 
-      customer.mail_country
+      selectedCustomer.mail_address + ", " +
+      selectedCustomer.mail_city + ", " +
+      selectedCustomer.mail_state + ", " +
+      selectedCustomer.mail_zip + ", " +
+      selectedCustomer.mail_country
       }}
     </div>
-    <div class="edit_customer" id="editCustomer">Edit this customer</div>
+    <div type="button" ng-click="deleteCustomer($index)">Delete this customer</div>
+
+    <div class="edit_customer" ng-click="showForm(true)">Edit this customer</div>
   </div>
 
 
   <div class="detail_container_2" hidden id="editForm">
-    <div class="detail_page_title">Edit Customer Info</div>    
+    <div class="detail_page_title">Edit Customer Info</div>
     <form class="infoForm">
       <div class="item_name_container">
         <div>First</div>
@@ -116,9 +118,9 @@
         <div>Company</div>
         <div>Department</div>
         <div>Email</div>
-        <div>Tel</div>    
+        <div>Tel</div>
         <div>Mobile</div>
-        <div class="item_collapsible_symbol" 
+        <div class="item_collapsible_symbol"
           ng-model="expand_shipment_addr" ng-click="expand_shipment_addr=!expand_shipment_addr">
           {{expand_shipment_addr === true ? "-" : "+"}}
         </div>
@@ -127,7 +129,7 @@
         <div class="item_name_container" ng-show="expand_shipment_addr">State</div>
         <div class="item_name_container" ng-show="expand_shipment_addr">country</div>
         <div class="item_name_container" ng-show="expand_shipment_addr">Zip</div>
-        <div class="item_collapsible_symbol" 
+        <div class="item_collapsible_symbol"
           ng-model="expand_mail_addr" ng-click="expand_mail_addr=!expand_mail_addr">
           {{expand_mail_addr === true ? "-" : "+"}}
         </div>
@@ -135,134 +137,62 @@
         <div class="item_name_container" ng-show="expand_mail_addr">City</div>
         <div class="item_name_container" ng-show="expand_mail_addr">State</div>
         <div class="item_name_container" ng-show="expand_mail_addr">country</div>
-        <div class="item_name_container" ng-show="expand_mail_addr">Zip</div>        
+        <div class="item_name_container" ng-show="expand_mail_addr">Zip</div>
       </div>
       <div class="item_input_container">
-        <input class="item_input" type="text" name="first" value="{{customer.first}}"></input>
-        <input class="item_input" type="text" name="last" value="{{customer.last}}"></input>
-        <input class="item_input" type="text" name="company_name" value="{{customer.company_name}}"></input>
-        <input class="item_input" type="text" name="department_name" value="{{customer.department_name}}"></input>
-        <input class="item_input" type="text" name="email" value="{{customer.email}}"></input>       
-        <input class="item_input" type="text" name="work_phone" value="{{customer.work_phone}}"></input>
-        <input class="item_input" type="text" name="mobile_phone" value="{{customer.mobile_phone}}"></input>
+        <input class="item_input" type="text" ng-model="user.first" ng-initial></input>
+        <input class="item_input" type="text" ng-model="user.last" ng-initial></input>
+        <input class="item_input" type="text" ng-model="user.company_name" ng-initial></input>
+        <input class="item_input" type="text" ng-model="user.department_name" ng-initial></input>
+        <input class="item_input" type="text" ng-model="user.email" ng-initial></input>
+        <input class="item_input" type="text" ng-model="user.work_phone" ng-initial></input>
+        <input class="item_input" type="text" ng-model="user.mobile_phone" ng-initial></input>
         <div class="item_collapsible_name">Shipment Address</div>
-        <input class="item_input" type="text" name="shipment_address" value="{{customer.shipment_address}}" 
+        <input class="item_input" type="text" ng-model="user.shipment_address" ng-initial
           ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_city" value="{{customer.shipment_city}}" 
+        <input class="item_input" type="text" ng-model="user.shipment_city" ng-initial
           ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_state" value="{{customer.shipment_state}}" 
+        <input class="item_input" type="text" ng-model="user.shipment_state" ng-initial
           ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_country" value="{{customer.shipment_country}}" 
+        <input class="item_input" type="text" ng-model="user.shipment_country" ng-initial
           ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_zip" value="{{customer.shipment_zip}}" 
+        <input class="item_input" type="text" ng-model="user.shipment_zip" ng-initial
           ng-show="expand_shipment_addr"></input>
         <div class="item_collapsible_name">Mail Address</div>
-        <input class="item_input" type="text" name="mail_address" value="{{customer.mail_address}}" 
+        <input class="item_input" type="text" ng-model="user.mail_address" ng-initial
           ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_city" value="{{customer.mail_city}}" 
+        <input class="item_input" type="text" ng-model="user.mail_city" ng-initial
           ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_state" value="{{customer.mail_state}}" 
+        <input class="item_input" type="text" ng-model="user.mail_state" ng-initial
           ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_country" value="{{customer.mail_country}}" 
+        <input class="item_input" type="text" ng-model="user.mail_country" ng-initial
           ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_zip" value="{{customer.mail_zip}}" 
+        <input class="item_input" type="text" ng-model="user.mail_zip" ng-initial
           ng-show="expand_mail_addr"></input>
-        <div class="item_delete" type="button">Delete</div>
-        <div class="item_save" type="button">Save</div>      
+        <div class="item_save" ng-click="update(user)" type="button">Save</div>
+        <div type="button" ng-click="cancelForm()">Cancel</div>
       </div>
     </form>
   </div>
 
-  <div class="detail_container_2" hidden id="informationForm">
-    <div class="detail_page_title">Add New Customer</div>
-    <form class="infoForm">
-      <div class="item_name_container">
-        <div>First</div>
-        <div>Last</div>
-        <div>Company</div>
-        <div>Department</div>
-        <div>Email</div>
-        <div>Tel</div>    
-        <div>Mobile</div>
-        <div class="item_collapsible_symbol" 
-          ng-model="expand_shipment_addr" ng-click="expand_shipment_addr=!expand_shipment_addr">
-          {{expand_shipment_addr === true ? "-" : "+"}}
-        </div>
-        <div class="item_name_container" ng-show="expand_shipment_addr">Street</div>
-        <div class="item_name_container" ng-show="expand_shipment_addr">City</div>
-        <div class="item_name_container" ng-show="expand_shipment_addr">State</div>
-        <div class="item_name_container" ng-show="expand_shipment_addr">country</div>
-        <div class="item_name_container" ng-show="expand_shipment_addr">Zip</div>
-        <div class="item_collapsible_symbol" 
-          ng-model="expand_mail_addr" ng-click="expand_mail_addr=!expand_mail_addr">
-          {{expand_mail_addr === true ? "-" : "+"}}
-        </div>
-        <div class="item_name_container" ng-show="expand_mail_addr">Street</div>
-        <div class="item_name_container" ng-show="expand_mail_addr">City</div>
-        <div class="item_name_container" ng-show="expand_mail_addr">State</div>
-        <div class="item_name_container" ng-show="expand_mail_addr">country</div>
-        <div class="item_name_container" ng-show="expand_mail_addr">Zip</div>        
-      </div>
-      <div class="item_input_container">
-        <input class="item_input" type="text" name="first" value="{{customer.first}}"></input>
-        <input class="item_input" type="text" name="last" value="{{customer.last}}"></input>
-        <input class="item_input" type="text" name="company_name" value="{{customer.company_name}}"
-          placeholder="Individual / Example Inc. ...">
-        </input>
-        <input class="item_input" type="text" name="department_name" value="{{customer.department_name}}"
-          placeholder="Purchase / Manufacturing / Sales ...">
-        </input>
-        <input class="item_input" type="text" name="email" value="{{customer.email}}"></input>       
-        <input class="item_input" type="text" name="work_phone" value="{{customer.work_phone}}" 
-          placeholder="XXX-XXX-XXXX">
-        </input>
-        <input class="item_input" type="text" name="mobile_phone" value="{{customer.mobile_phone}}" 
-          placeholder="XXX-XXX-XXXX">
-        </input>
-        <div class="item_collapsible_name">Shipment Address</div>
-        <input class="item_input" type="text" name="shipment_address" value="{{customer.shipment_address}}" 
-          ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_city" value="{{customer.shipment_city}}" 
-          ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_state" value="{{customer.shipment_state}}" 
-          ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_country" value="{{customer.shipment_country}}" 
-          ng-show="expand_shipment_addr"></input>
-        <input class="item_input" type="text" name="shipment_zip" value="{{customer.shipment_zip}}" 
-          ng-show="expand_shipment_addr"></input>
-        <div class="item_collapsible_name">Mail Address</div>
-        <input class="item_input" type="text" name="mail_address" value="{{customer.mail_address}}" 
-          ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_city" value="{{customer.mail_city}}" 
-          ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_state" value="{{customer.mail_state}}" 
-          ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_country" value="{{customer.mail_country}}" 
-          ng-show="expand_mail_addr"></input>
-        <input class="item_input" type="text" name="mail_zip" value="{{customer.mail_zip}}" 
-          ng-show="expand_mail_addr"></input>
-        <div class="new_customer_save" type="button">Save as a New Customer</div>
-      </div>
-    </form>
-  </div>
   <div class="hyperlink_container">
     <div class="APP_hyperlink_onelink">
       <div class="APP_hyperlink_app_edge"></div>
       <div class="APP_hyperlink_app_image"></div>
-      <div class="APP_hyperlink_app_name">Quotes</div> 
+      <div class="APP_hyperlink_app_name">Quotes</div>
     </div>
     <div class="APP_hyperlink_onelink">
       <div class="APP_hyperlink_app_edge"></div>
       <div class="APP_hyperlink_app_image"></div>
-      <div class="APP_hyperlink_app_name">Sales</div> 
-    </div>    
+      <div class="APP_hyperlink_app_name">Sales</div>
+    </div>
     <div class="APP_hyperlink_onelink">
       <div class="APP_hyperlink_app_edge"></div>
       <div class="APP_hyperlink_app_image">+</div>
       <div class="APP_hyperlink_app_name">New Link</div>
-    </div>     
+    </div>
     <div class="APP_hyperlink">Direct Link</div>
-  </div>  
+  </div>
 
     <!--[if lt IE 7]>
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
